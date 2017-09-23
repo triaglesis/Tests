@@ -7,3 +7,5 @@
 *.iml
 out
 gen
+*.pyc
+progress_bar_tst/__pycache__/__init__.cpython-34.pyc
