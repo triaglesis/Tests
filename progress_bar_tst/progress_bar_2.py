@@ -16,8 +16,7 @@ result_err = []
 # Until I get last line and the end of string:
 while (p.stdout or p.stderr) is not None:
 
-    for line in (p.stdout and p.stderr):
-        bar.update()
+    bar.update()
 
     out = p.stdout.readline()
     err = p.stderr.readline()
