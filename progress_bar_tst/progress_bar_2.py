@@ -1,4 +1,5 @@
 import sys
+import time
 import subprocess
 import progressbar
 
@@ -9,28 +10,29 @@ bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
 p = subprocess.Popen("C:\Python34\python.exe worker.py", shell=True, stdout=subprocess.PIPE,
                                                                      stderr=subprocess.PIPE)
 # Lines will be collected in list:
-result = []
+result_out = []
+result_err = []
 
 # Until I get last line and the end of string:
-while p.stdout is not None:
+while (p.stdout or p.stderr) is not None:
 
-    # Update spinner on one step:
-    # It will update only when any line was printed to stdout!
-    bar.update()
-    # Read each line:
+    for line in (p.stdout and p.stderr):
+        bar.update()
 
-    line = p.stdout.readline()
-    # Add line in list and remove carriage return
+    out = p.stdout.readline()
+    err = p.stderr.readline()
 
-    result.append(line.decode('UTF-8').rstrip('\r'))
+    result_out.append(out.decode('UTF-8').rstrip('\r'))
+    result_err.append(err.decode('UTF-8').rstrip('\r'))
+    time.sleep(0.5)
 
-    # When no lines appears:
-    if not line:
-        print("\n")
-        p.stdout.flush()
+    if not out:
+        print("")
         break
 
 # Show finish message, it also useful because bar cannot start new line on console, why?
 print("Finish:")
 # Results as string:
-print(''.join(result))
+print(''.join(result_out))
+print("Errors:")
+print(''.join(result_err))
